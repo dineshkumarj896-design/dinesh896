@@ -1,0 +1,1482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Career Connect — Find Your Dream Job Faster</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+/* ============ DESIGN TOKENS ============
+   Display face : Sora        (headlines, numbers, brand)
+   Body face    : Inter       (paragraphs, UI text)
+   Utility face : JetBrains Mono (stats, tags, code-like labels)
+   Palette:
+     --navy      #0B1F3A  (deep base / dark mode bg)
+     --blue      #2563EB  (primary action)
+     --sky       #38BDF8  (secondary accent)
+     --teal      #06B6D4  (signature accent - "career path" line)
+     --ink       #0F172A  (text on light)
+     --paper     #F6F8FC  (light bg)
+     --line      #E2E8F0  (hairline borders)
+=========================================== */
+:root{
+  --navy:#0B1F3A;
+  --blue:#2563EB;
+  --blue-dark:#1D4ED8;
+  --sky:#38BDF8;
+  --teal:#06B6D4;
+  --ink:#0F172A;
+  --sub:#5B6B82;
+  --paper:#F6F8FC;
+  --card:#FFFFFF;
+  --line:#E4E9F2;
+  --success:#10B981;
+  --warn:#F59E0B;
+  --danger:#EF4444;
+  --radius:16px;
+  --shadow: 0 1px 2px rgba(15,23,42,.04), 0 12px 28px -12px rgba(15,23,42,.12);
+}
+[data-theme="dark"]{
+  --navy:#060F1F;
+  --ink:#EAF1FB;
+  --sub:#93A4BD;
+  --paper:#0B1729;
+  --card:#101F36;
+  --line:#1E2E48;
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 14px 32px -14px rgba(0,0,0,.55);
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0; font-family:'Inter',sans-serif; background:var(--paper); color:var(--ink);
+  transition:background .35s ease, color .35s ease;
+}
+.disp{font-family:'Sora',sans-serif;}
+.mono{font-family:'JetBrains Mono',monospace; letter-spacing:.02em;}
+a{text-decoration:none; color:inherit;}
+button{font-family:inherit; cursor:pointer;}
+::selection{background:var(--teal); color:#fff;}
+@media (prefers-reduced-motion: reduce){ *{animation-duration:.001s !important; transition-duration:.001s !important;} }
+
+/* ---------- layout shell ---------- */
+.wrap{max-width:1240px; margin:0 auto; padding:0 24px;}
+.app-shell{min-height:100vh; display:flex; flex-direction:column;}
+.page{display:none; animation:fadeIn .45s ease both;}
+.page.active{display:block;}
+@keyframes fadeIn{from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);}}
+
+/* ---------- navbar ---------- */
+.navbar{
+  position:sticky; top:0; z-index:50; background:color-mix(in srgb, var(--paper) 88%, transparent);
+  backdrop-filter:blur(14px); border-bottom:1px solid var(--line);
+}
+.nav-inner{display:flex; align-items:center; justify-content:space-between; height:72px;}
+.brand{display:flex; align-items:center; gap:10px; font-weight:800; font-size:20px;}
+.brand-mark{
+  width:34px; height:34px; border-radius:10px; background:linear-gradient(135deg,var(--blue),var(--teal));
+  display:flex; align-items:center; justify-content:center; color:#fff; font-size:16px; font-weight:800;
+  box-shadow:0 6px 14px -4px rgba(37,99,235,.55);
+}
+.nav-links{display:flex; gap:6px; align-items:center;}
+.nav-link{
+  padding:10px 16px; border-radius:10px; font-weight:600; font-size:14.5px; color:var(--sub);
+  transition:all .2s ease; position:relative;
+}
+.nav-link:hover{color:var(--ink); background:color-mix(in srgb, var(--blue) 8%, transparent);}
+.nav-link.active{color:var(--blue); background:color-mix(in srgb, var(--blue) 12%, transparent);}
+.nav-right{display:flex; align-items:center; gap:10px;}
+.icon-btn{
+  width:40px; height:40px; border-radius:10px; border:1px solid var(--line); background:var(--card);
+  display:flex; align-items:center; justify-content:center; color:var(--ink); transition:.2s; position:relative;
+}
+.icon-btn:hover{border-color:var(--blue); transform:translateY(-2px);}
+.badge-dot{
+  position:absolute; top:-4px; right:-4px; min-width:18px; height:18px; border-radius:9px; background:var(--teal);
+  color:#fff; font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center; padding:0 4px;
+}
+.btn{
+  display:inline-flex; align-items:center; gap:8px; justify-content:center; font-weight:700; font-size:14.5px;
+  padding:11px 20px; border-radius:11px; border:1px solid transparent; transition:all .2s ease; white-space:nowrap;
+}
+.btn-primary{background:linear-gradient(135deg,var(--blue),var(--blue-dark)); color:#fff; box-shadow:0 8px 20px -8px rgba(37,99,235,.6);}
+.btn-primary:hover{transform:translateY(-2px); box-shadow:0 12px 24px -8px rgba(37,99,235,.7);}
+.btn-ghost{background:transparent; border-color:var(--line); color:var(--ink);}
+.btn-ghost:hover{border-color:var(--blue); color:var(--blue);}
+.btn-sm{padding:8px 14px; font-size:13px; border-radius:9px;}
+.btn-danger{background:color-mix(in srgb, var(--danger) 12%, transparent); color:var(--danger); border-color:color-mix(in srgb, var(--danger) 30%, transparent);}
+.btn-danger:hover{background:var(--danger); color:#fff;}
+.hamburger{display:none;}
+
+/* ---------- hero ---------- */
+.hero{position:relative; overflow:hidden; padding:88px 0 64px; background:
+  radial-gradient(1100px 480px at 80% -10%, color-mix(in srgb, var(--blue) 16%, transparent), transparent 60%),
+  radial-gradient(800px 420px at 5% 0%, color-mix(in srgb, var(--teal) 14%, transparent), transparent 60%);
+}
+.hero-grid{display:grid; grid-template-columns:1.1fr .9fr; gap:48px; align-items:center;}
+.eyebrow{
+  display:inline-flex; align-items:center; gap:8px; font-size:12.5px; font-weight:700; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--blue); background:color-mix(in srgb, var(--blue) 10%, transparent);
+  padding:7px 14px; border-radius:999px; margin-bottom:20px;
+}
+.eyebrow .dot{width:6px; height:6px; border-radius:50%; background:var(--teal); animation:pulse 1.8s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+.hero h1{font-size:clamp(34px,5vw,58px); line-height:1.05; margin:0 0 18px; font-weight:800; letter-spacing:-.02em;}
+.hero h1 .grad{background:linear-gradient(100deg,var(--blue),var(--teal)); -webkit-background-clip:text; background-clip:text; color:transparent;}
+.hero p.lead{font-size:17.5px; color:var(--sub); max-width:540px; margin:0 0 30px; line-height:1.65;}
+.search-bar{
+  display:flex; gap:8px; background:var(--card); border:1px solid var(--line); padding:8px; border-radius:16px;
+  box-shadow:var(--shadow); flex-wrap:wrap;
+}
+.search-bar input, .search-bar select{
+  border:none; outline:none; background:transparent; font-size:14.5px; color:var(--ink); padding:12px 14px; flex:1; min-width:120px;
+}
+.search-bar .divider{width:1px; background:var(--line); margin:8px 0;}
+.cta-row{display:flex; gap:14px; margin-top:24px; flex-wrap:wrap;}
+.suggest-row{display:flex; gap:8px; margin-top:14px; flex-wrap:wrap;}
+.chip{
+  font-size:12.5px; padding:6px 12px; border-radius:999px; border:1px solid var(--line); color:var(--sub);
+  cursor:pointer; transition:.2s; background:var(--card);
+}
+.chip:hover{border-color:var(--blue); color:var(--blue); transform:translateY(-1px);}
+
+/* career path signature graphic */
+.path-art{position:relative; height:420px;}
+.path-art svg{width:100%; height:100%;}
+.path-line{fill:none; stroke:var(--teal); stroke-width:3; stroke-linecap:round; stroke-dasharray:6 10; animation:dash 30s linear infinite;}
+@keyframes dash{to{stroke-dashoffset:-1000;}}
+.path-node{
+  position:absolute; background:var(--card); border:1px solid var(--line); border-radius:14px; padding:12px 16px;
+  box-shadow:var(--shadow); display:flex; align-items:center; gap:10px; font-size:13px; font-weight:700;
+  animation:float 5s ease-in-out infinite;
+}
+.path-node .ic{font-size:18px;}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+
+/* ---------- stats ---------- */
+.stats-strip{padding:36px 0; border-top:1px solid var(--line); border-bottom:1px solid var(--line); background:var(--card);}
+.stats-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:24px; text-align:center;}
+.stat-num{font-family:'Sora',sans-serif; font-size:36px; font-weight:800; color:var(--blue);}
+.stat-label{font-size:13px; color:var(--sub); margin-top:4px; text-transform:uppercase; letter-spacing:.05em;}
+
+/* ---------- section heading ---------- */
+.section{padding:64px 0;}
+.section-head{display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:32px; flex-wrap:wrap; gap:12px;}
+.section-head h2{font-size:30px; font-weight:800; margin:0;}
+.section-head p{color:var(--sub); margin:6px 0 0; font-size:14.5px;}
+
+/* ---------- job cards ---------- */
+.jobs-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:20px;}
+.job-card{
+  background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:22px;
+  display:flex; flex-direction:column; gap:14px; transition:all .25s ease; position:relative; overflow:hidden;
+}
+.job-card::before{
+  content:''; position:absolute; left:0; top:0; bottom:0; width:3px; background:linear-gradient(180deg,var(--blue),var(--teal));
+  opacity:0; transition:.25s;
+}
+.job-card:hover{transform:translateY(-5px); box-shadow:var(--shadow); border-color:transparent;}
+.job-card:hover::before{opacity:1;}
+.job-top{display:flex; justify-content:space-between; align-items:flex-start; gap:10px;}
+.job-logo{
+  width:46px; height:46px; border-radius:11px; background:linear-gradient(135deg,var(--blue),var(--sky)); color:#fff;
+  display:flex; align-items:center; justify-content:center; font-weight:800; font-size:16px; flex-shrink:0;
+}
+.bookmark-btn{
+  width:34px; height:34px; border-radius:9px; border:1px solid var(--line); background:transparent; display:flex;
+  align-items:center; justify-content:center; transition:.2s; flex-shrink:0; color:var(--sub);
+}
+.bookmark-btn:hover{border-color:var(--blue);}
+.bookmark-btn.saved{background:color-mix(in srgb, var(--teal) 14%, transparent); border-color:var(--teal); color:var(--teal);}
+.job-title{font-weight:700; font-size:16.5px; margin:0;}
+.job-company{color:var(--sub); font-size:13.5px; margin:2px 0 0;}
+.job-meta{display:flex; flex-wrap:wrap; gap:8px; font-size:12.5px; color:var(--sub);}
+.job-meta span{display:flex; align-items:center; gap:5px; background:color-mix(in srgb, var(--blue) 6%, transparent); padding:5px 10px; border-radius:8px;}
+.job-tags{display:flex; gap:6px; flex-wrap:wrap;}
+.tag{font-size:11.5px; font-weight:600; padding:4px 10px; border-radius:999px; background:color-mix(in srgb, var(--teal) 12%, transparent); color:var(--teal);}
+.job-salary{font-family:'Sora',sans-serif; font-weight:800; font-size:16px; color:var(--ink);}
+.job-actions{display:flex; gap:10px; margin-top:auto;}
+.job-actions .btn{flex:1;}
+.exp-pill{font-size:11px; font-weight:700; padding:3px 9px; border-radius:7px; text-transform:uppercase;}
+.exp-fresher{background:color-mix(in srgb, var(--success) 16%, transparent); color:var(--success);}
+.exp-junior{background:color-mix(in srgb, var(--blue) 14%, transparent); color:var(--blue);}
+.exp-mid{background:color-mix(in srgb, var(--warn) 16%, transparent); color:var(--warn);}
+.exp-senior{background:color-mix(in srgb, var(--danger) 14%, transparent); color:var(--danger);}
+
+/* ---------- jobs page layout (search & filter) ---------- */
+.jobs-layout{display:grid; grid-template-columns:280px 1fr; gap:28px; align-items:flex-start;}
+.filter-panel{
+  background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:22px; position:sticky; top:90px;
+}
+.filter-panel h3{margin:0 0 16px; font-size:16px; font-weight:800; display:flex; justify-content:space-between; align-items:center;}
+.filter-group{margin-bottom:20px;}
+.filter-group label{font-size:12.5px; font-weight:700; color:var(--sub); text-transform:uppercase; letter-spacing:.04em; display:block; margin-bottom:8px;}
+.filter-group select, .filter-group input[type=text]{
+  width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:var(--paper); color:var(--ink); font-size:13.5px; outline:none;
+}
+.filter-group select:focus, .filter-group input:focus{border-color:var(--blue);}
+.range-row{display:flex; align-items:center; gap:8px; font-size:12px; color:var(--sub);}
+input[type=range]{width:100%; accent-color:var(--blue);}
+.results-top{display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; flex-wrap:wrap; gap:10px;}
+.results-count{font-size:14px; color:var(--sub);}
+.results-count b{color:var(--ink);}
+.sort-select{padding:9px 12px; border-radius:10px; border:1px solid var(--line); background:var(--card); font-size:13px;}
+.jobs-grid-2{display:grid; grid-template-columns:repeat(2,1fr); gap:18px;}
+
+/* pagination */
+.pagination{display:flex; justify-content:center; gap:8px; margin-top:36px;}
+.page-btn{
+  width:38px; height:38px; border-radius:10px; border:1px solid var(--line); background:var(--card); font-weight:700;
+  font-size:13.5px; display:flex; align-items:center; justify-content:center; transition:.2s;
+}
+.page-btn:hover{border-color:var(--blue);}
+.page-btn.active{background:var(--blue); color:#fff; border-color:var(--blue);}
+
+/* empty / loading */
+.empty-state{text-align:center; padding:80px 20px; color:var(--sub);}
+.empty-state .big-ic{font-size:54px; margin-bottom:14px;}
+.empty-state h3{color:var(--ink); margin:0 0 8px; font-size:19px;}
+.skeleton{background:linear-gradient(90deg,var(--line) 25%, color-mix(in srgb, var(--line) 50%, transparent) 50%, var(--line) 75%); background-size:200% 100%; animation:shimmer 1.4s infinite; border-radius:10px;}
+@keyframes shimmer{from{background-position:200% 0;}to{background-position:-200% 0;}}
+
+/* job details */
+.details-grid{display:grid; grid-template-columns:1fr 320px; gap:28px; align-items:flex-start;}
+.detail-card{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:30px;}
+.detail-header{display:flex; gap:18px; align-items:flex-start; margin-bottom:24px; flex-wrap:wrap;}
+.detail-logo{width:64px; height:64px; border-radius:16px; background:linear-gradient(135deg,var(--blue),var(--teal)); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:24px;}
+.detail-header h1{font-size:25px; margin:0 0 4px;}
+.detail-block h4{font-size:14px; text-transform:uppercase; letter-spacing:.04em; color:var(--blue); margin:26px 0 12px;}
+.detail-block h4:first-of-type{margin-top:0;}
+.detail-block p, .detail-block li{color:var(--sub); line-height:1.7; font-size:14.5px;}
+.detail-block ul{padding-left:18px; margin:0;}
+.side-card{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:22px; margin-bottom:18px;}
+.side-card .row{display:flex; justify-content:space-between; padding:9px 0; font-size:13.5px; border-bottom:1px dashed var(--line);}
+.side-card .row:last-child{border-bottom:none;}
+.side-card .row span:first-child{color:var(--sub);}
+.side-card .row span:last-child{font-weight:700;}
+
+/* admin */
+.admin-shell{display:grid; grid-template-columns:240px 1fr; gap:0; min-height:calc(100vh - 72px);}
+.admin-side{background:var(--navy); padding:28px 18px; color:#fff;}
+.admin-side .nav-link{color:#B9C6DE; display:flex; align-items:center; gap:10px; margin-bottom:4px;}
+.admin-side .nav-link.active{background:rgba(255,255,255,.12); color:#fff;}
+.admin-side .nav-link:hover{background:rgba(255,255,255,.08); color:#fff;}
+.admin-main{padding:32px; background:var(--paper);}
+.kpi-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:18px; margin-bottom:28px;}
+.kpi-card{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:20px; display:flex; flex-direction:column; gap:6px;}
+.kpi-top{display:flex; justify-content:space-between; align-items:center;}
+.kpi-ic{width:40px; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:18px;}
+.kpi-val{font-family:'Sora',sans-serif; font-size:28px; font-weight:800;}
+.kpi-label{font-size:12.5px; color:var(--sub);}
+.admin-table-wrap{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); overflow:hidden;}
+table{width:100%; border-collapse:collapse; font-size:13.5px;}
+thead{background:color-mix(in srgb, var(--blue) 6%, transparent);}
+th{text-align:left; padding:13px 16px; font-weight:700; color:var(--sub); font-size:12px; text-transform:uppercase; letter-spacing:.04em;}
+td{padding:13px 16px; border-top:1px solid var(--line);}
+tr:hover td{background:color-mix(in srgb, var(--blue) 3%, transparent);}
+.row-actions{display:flex; gap:6px;}
+.row-actions button{width:32px; height:32px; border-radius:8px; border:1px solid var(--line); background:transparent;}
+.row-actions button:hover{border-color:var(--blue);}
+
+/* modal */
+.modal-overlay{position:fixed; inset:0; background:rgba(8,15,30,.55); backdrop-filter:blur(3px); z-index:200; display:none; align-items:center; justify-content:center; padding:20px;}
+.modal-overlay.open{display:flex;}
+.modal-box{background:var(--card); border-radius:18px; padding:30px; max-width:560px; width:100%; max-height:88vh; overflow-y:auto; box-shadow:0 30px 60px -20px rgba(0,0,0,.4); animation:modalIn .25s ease;}
+@keyframes modalIn{from{opacity:0; transform:translateY(16px) scale(.98);} to{opacity:1; transform:translateY(0) scale(1);}}
+.modal-box h3{margin:0 0 18px; font-size:19px; font-weight:800;}
+.form-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+.form-grid .full{grid-column:1/-1;}
+.form-field label{font-size:12.5px; font-weight:700; color:var(--sub); display:block; margin-bottom:6px;}
+.form-field input, .form-field select, .form-field textarea{
+  width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:var(--paper); color:var(--ink); font-size:13.5px; outline:none; font-family:inherit;
+}
+.form-field textarea{min-height:80px; resize:vertical;}
+.modal-actions{display:flex; gap:10px; margin-top:20px; justify-content:flex-end;}
+.toast-wrap{position:fixed; bottom:24px; right:24px; z-index:300; display:flex; flex-direction:column; gap:10px;}
+.toast{background:var(--ink); color:#fff; padding:13px 18px; border-radius:11px; font-size:13.5px; font-weight:600; box-shadow:var(--shadow); display:flex; align-items:center; gap:10px; animation:toastIn .3s ease;}
+@keyframes toastIn{from{opacity:0; transform:translateX(30px);} to{opacity:1; transform:translateX(0);}}
+
+/* footer */
+footer{background:var(--navy); color:#B9C6DE; padding:48px 0 22px; margin-top:30px;}
+.footer-grid{display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:32px; padding-bottom:32px; border-bottom:1px solid rgba(255,255,255,.1);}
+footer h5{color:#fff; font-size:14px; margin:0 0 14px;}
+footer a{display:block; color:#9DAEC9; font-size:13.5px; margin-bottom:9px; transition:.2s;}
+footer a:hover{color:var(--teal);}
+.footer-bottom{display:flex; justify-content:space-between; padding-top:20px; font-size:12.5px; flex-wrap:wrap; gap:10px;}
+
+/* misc */
+.toggle-switch{width:46px; height:26px; border-radius:14px; background:var(--line); position:relative; border:none; transition:.25s;}
+.toggle-switch::after{content:''; position:absolute; width:20px; height:20px; border-radius:50%; background:#fff; top:3px; left:3px; transition:.25s; box-shadow:0 1px 3px rgba(0,0,0,.3);}
+.toggle-switch.on{background:var(--blue);}
+.toggle-switch.on::after{left:23px;}
+.section-alt{background:var(--card); border-top:1px solid var(--line); border-bottom:1px solid var(--line);}
+
+/* ---------- splash screen ---------- */
+#splash{
+  position:fixed; inset:0; z-index:500; background:linear-gradient(135deg,var(--navy),#0B2A52 60%, #07243f);
+  display:flex; align-items:center; justify-content:center; flex-direction:column; transition:opacity .5s ease, visibility .5s ease;
+}
+#splash.hide{opacity:0; visibility:hidden; pointer-events:none;}
+.splash-logo{
+  width:88px; height:88px; border-radius:22px; background:linear-gradient(135deg,var(--blue),var(--teal)); color:#fff;
+  display:flex; align-items:center; justify-content:center; font-size:34px; font-weight:800; font-family:'Sora',sans-serif;
+  box-shadow:0 20px 50px -10px rgba(37,99,235,.6); animation:splashPop .7s ease;
+}
+@keyframes splashPop{0%{transform:scale(.6) rotate(-8deg); opacity:0;} 100%{transform:scale(1) rotate(0); opacity:1;}}
+.splash-title{color:#fff; font-family:'Sora',sans-serif; font-weight:800; font-size:24px; margin-top:22px; letter-spacing:-.01em;}
+.splash-sub{color:#9DAEC9; font-size:13.5px; margin-top:6px;}
+.splash-bar{width:220px; height:4px; border-radius:4px; background:rgba(255,255,255,.12); margin-top:26px; overflow:hidden;}
+.splash-bar::after{content:''; display:block; height:100%; width:40%; background:linear-gradient(90deg,var(--blue),var(--teal)); border-radius:4px; animation:splashLoad 1.1s ease-in-out infinite;}
+@keyframes splashLoad{0%{transform:translateX(-100%);}100%{transform:translateX(280%);}}
+
+/* ---------- auth pages ---------- */
+.auth-wrap{min-height:calc(100vh - 72px); display:flex; align-items:center; justify-content:center; padding:50px 20px;}
+.auth-card{
+  width:100%; max-width:420px; background:var(--card); border:1px solid var(--line); border-radius:20px; padding:38px 34px;
+  box-shadow:var(--shadow); position:relative; overflow:hidden;
+}
+.auth-card::before{content:''; position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg,var(--blue),var(--teal));}
+.auth-tabs{display:flex; gap:6px; background:var(--paper); border-radius:11px; padding:5px; margin-bottom:26px;}
+.auth-tab{flex:1; text-align:center; padding:9px; border-radius:8px; font-weight:700; font-size:13.5px; color:var(--sub); transition:.2s;}
+.auth-tab.active{background:var(--card); color:var(--blue); box-shadow:var(--shadow);}
+.auth-card h2{margin:0 0 6px; font-size:23px;}
+.auth-card p.sub{color:var(--sub); font-size:13.5px; margin:0 0 24px;}
+.form-field2{margin-bottom:16px;}
+.form-field2 label{font-size:12.5px; font-weight:700; color:var(--sub); display:block; margin-bottom:7px;}
+.form-field2 input{width:100%; padding:11px 13px; border-radius:10px; border:1px solid var(--line); background:var(--paper); color:var(--ink); font-size:14px; outline:none;}
+.form-field2 input:focus{border-color:var(--blue);}
+.field-error{color:var(--danger); font-size:12px; margin-top:5px; display:none;}
+.auth-foot{text-align:center; font-size:13px; color:var(--sub); margin-top:18px;}
+.auth-divider{display:flex; align-items:center; gap:10px; margin:18px 0; color:var(--sub); font-size:12px;}
+.auth-divider::before, .auth-divider::after{content:''; flex:1; height:1px; background:var(--line);}
+.demo-note{background:color-mix(in srgb, var(--blue) 8%, transparent); border:1px solid color-mix(in srgb, var(--blue) 20%, transparent); border-radius:10px; padding:10px 13px; font-size:12px; color:var(--sub); margin-bottom:18px;}
+
+/* ---------- avatar / dropdown ---------- */
+.avatar-circle{
+  width:40px; height:40px; border-radius:50%; background:linear-gradient(135deg,var(--blue),var(--teal)); color:#fff;
+  display:flex; align-items:center; justify-content:center; font-weight:800; font-size:14px; cursor:pointer; border:2px solid var(--card);
+}
+.avatar-wrap{position:relative;}
+.avatar-menu{
+  position:absolute; right:0; top:50px; width:220px; background:var(--card); border:1px solid var(--line); border-radius:14px;
+  box-shadow:var(--shadow); padding:8px; display:none; z-index:60;
+}
+.avatar-menu.open{display:block; animation:modalIn .2s ease;}
+.avatar-menu .am-head{padding:12px 12px 10px; border-bottom:1px solid var(--line); margin-bottom:6px;}
+.avatar-menu .am-head b{display:block; font-size:14px;}
+.avatar-menu .am-head span{font-size:12px; color:var(--sub);}
+.avatar-menu a{display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:9px; font-size:13.5px; font-weight:600; transition:.15s;}
+.avatar-menu a:hover{background:color-mix(in srgb, var(--blue) 8%, transparent); color:var(--blue);}
+
+/* ---------- profile page ---------- */
+.profile-grid{display:grid; grid-template-columns:300px 1fr; gap:24px; align-items:flex-start;}
+.profile-card{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:28px; text-align:center;}
+.profile-avatar{width:84px; height:84px; border-radius:50%; background:linear-gradient(135deg,var(--blue),var(--teal)); color:#fff; display:flex; align-items:center; justify-content:center; font-size:28px; font-weight:800; margin:0 auto 14px;}
+.profile-stats{display:flex; justify-content:space-around; margin-top:20px; padding-top:18px; border-top:1px solid var(--line);}
+.profile-stats div{text-align:center;}
+.profile-stats b{display:block; font-family:'Sora',sans-serif; font-size:20px; color:var(--blue);}
+.profile-stats span{font-size:11.5px; color:var(--sub);}
+.tab-row{display:flex; gap:8px; margin-bottom:20px; border-bottom:1px solid var(--line);}
+.tab-item{padding:10px 4px; margin-right:18px; font-weight:700; font-size:14px; color:var(--sub); border-bottom:2px solid transparent; cursor:pointer;}
+.tab-item.active{color:var(--blue); border-color:var(--blue);}
+.applied-row{display:flex; justify-content:space-between; align-items:center; padding:14px; border:1px solid var(--line); border-radius:12px; margin-bottom:10px;}
+.applied-row .at-status{font-size:11.5px; font-weight:700; padding:4px 10px; border-radius:7px; background:color-mix(in srgb, var(--success) 16%, transparent); color:var(--success);}
+
+/* ---------- settings page ---------- */
+.settings-grid{max-width:680px; margin:0 auto;}
+.settings-block{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:24px; margin-bottom:18px;}
+.settings-block h3{margin:0 0 4px; font-size:16px;}
+.settings-block p.hint{color:var(--sub); font-size:13px; margin:0 0 18px;}
+.setting-row{display:flex; justify-content:space-between; align-items:center; padding:14px 0; border-top:1px solid var(--line);}
+.setting-row:first-of-type{border-top:none;}
+.setting-row .sr-label{font-weight:600; font-size:14px;}
+.setting-row .sr-desc{font-size:12.5px; color:var(--sub); margin-top:2px;}
+
+@media(max-width:980px){
+  .hero-grid{grid-template-columns:1fr;}
+  .path-art{display:none;}
+  .stats-grid{grid-template-columns:repeat(2,1fr);}
+  .jobs-grid{grid-template-columns:repeat(2,1fr);}
+  .jobs-layout{grid-template-columns:1fr;}
+  .filter-panel{position:relative; top:0;}
+  .jobs-grid-2{grid-template-columns:1fr;}
+  .details-grid{grid-template-columns:1fr;}
+  .footer-grid{grid-template-columns:1fr 1fr;}
+  .admin-shell{grid-template-columns:1fr;}
+  .admin-side{display:flex; overflow-x:auto; gap:6px;}
+  .kpi-grid{grid-template-columns:repeat(2,1fr);}
+  .profile-grid{grid-template-columns:1fr;}
+}
+@media(max-width:680px){
+  .nav-links{display:none;}
+  .hamburger{display:flex;}
+  .jobs-grid{grid-template-columns:1fr;}
+  .stats-grid{grid-template-columns:repeat(2,1fr);}
+  .form-grid{grid-template-columns:1fr;}
+  .kpi-grid{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body data-theme="light">
+<div id="splash">
+  <div class="splash-logo">SC</div>
+  <div class="splash-title">Smart Career Connect</div>
+  <div class="splash-sub">Loading your career dashboard...</div>
+  <div class="splash-bar"></div>
+</div>
+<div id="toastWrap" class="toast-wrap"></div>
+
+<!-- ============ NAVBAR ============ -->
+<div class="navbar">
+  <div class="wrap nav-inner">
+    <a href="#" class="brand" onclick="go('home')">
+      <span class="brand-mark">SC</span> Smart Career Connect
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a class="nav-link" data-page="home" onclick="go('home')">Home</a>
+      <a class="nav-link" data-page="jobs" onclick="go('jobs')">Find Jobs</a>
+      <a class="nav-link" data-page="saved" onclick="go('saved')">Saved Jobs</a>
+      <a class="nav-link" data-page="admin" onclick="go('admin')">Admin</a>
+    </nav>
+    <div class="nav-right">
+      <button class="icon-btn" onclick="toggleTheme()" id="themeBtn" title="Toggle dark mode">🌙</button>
+      <button class="icon-btn" onclick="go('saved')" title="Saved jobs">♥<span class="badge-dot" id="savedCount">0</span></button>
+      <div id="authArea"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ HOME PAGE ============ -->
+<div class="page active" id="page-home">
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <div class="eyebrow"><span class="dot"></span> Built for Students &amp; Fresh Graduates</div>
+        <h1>Find Your <span class="grad">Dream Job</span> Faster</h1>
+        <p class="lead">Search, filter and track real openings from top companies — built for placement cells, campus hiring, and your first big career move.</p>
+
+        <div class="search-bar">
+          <input type="text" id="heroSearch" placeholder="Job title, skill or company — e.g. React, AI Engineer">
+          <div class="divider"></div>
+          <select id="heroLocation">
+            <option value="">All Locations</option>
+          </select>
+          <button class="btn btn-primary" onclick="runHeroSearch()">🔍 Search Jobs</button>
+        </div>
+        <div class="suggest-row" id="suggestRow"></div>
+
+        <div class="cta-row">
+          <button class="btn btn-primary" onclick="go('jobs')">Explore All Jobs →</button>
+          <button class="btn btn-ghost" onclick="go('admin')">Post a Job (Admin)</button>
+        </div>
+      </div>
+
+      <div class="path-art">
+        <svg viewBox="0 0 400 420">
+          <path class="path-line" d="M30 380 C 100 380, 60 280, 150 270 S 260 180, 230 100 S 320 40, 360 30"/>
+        </svg>
+        <div class="path-node" style="top:340px; left:10px; animation-delay:.2s;"><span class="ic">🎓</span> Campus Ready</div>
+        <div class="path-node" style="top:225px; left:120px; animation-delay:1s;"><span class="ic">🧩</span> Skill Match</div>
+        <div class="path-node" style="top:120px; left:170px; animation-delay:1.8s;"><span class="ic">📌</span> Saved Jobs</div>
+        <div class="path-node" style="top:10px; left:230px; animation-delay:2.6s;"><span class="ic">🚀</span> Offer Letter</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="stats-strip">
+    <div class="wrap stats-grid">
+      <div><div class="stat-num mono" id="statJobs">0</div><div class="stat-label">Total Jobs</div></div>
+      <div><div class="stat-num mono" id="statCompanies">0</div><div class="stat-label">Companies</div></div>
+      <div><div class="stat-num mono" id="statLocations">0</div><div class="stat-label">Locations</div></div>
+      <div><div class="stat-num mono" id="statRoles">0</div><div class="stat-label">Job Roles</div></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <h2>Featured Jobs</h2>
+          <p>Hand-picked openings popular with first-time job seekers right now.</p>
+        </div>
+        <button class="btn btn-ghost" onclick="go('jobs')">View All →</button>
+      </div>
+      <div class="jobs-grid" id="featuredGrid"></div>
+    </div>
+  </section>
+
+  <section class="section section-alt">
+    <div class="wrap">
+      <div class="section-head">
+        <div><h2>Popular Roles</h2><p>Most searched career tracks on Smart Career Connect.</p></div>
+      </div>
+      <div class="jobs-grid" id="rolesGrid" style="grid-template-columns:repeat(4,1fr);"></div>
+    </div>
+  </section>
+</div>
+
+<!-- ============ JOBS / SEARCH & FILTER PAGE ============ -->
+<div class="page" id="page-jobs">
+  <section class="section" style="padding-top:36px;">
+    <div class="wrap">
+      <div class="section-head">
+        <div><h2>Find Jobs</h2><p>Search by title, company or skill — results update instantly.</p></div>
+      </div>
+
+      <div class="search-bar" style="margin-bottom:24px;">
+        <input type="text" id="jobsSearch" placeholder="Search job title, company or skill..." oninput="applyFilters()">
+        <div class="divider"></div>
+        <button class="btn btn-primary" onclick="applyFilters()">🔍 Search</button>
+      </div>
+
+      <div class="jobs-layout">
+        <aside class="filter-panel">
+          <h3>Filters <a style="font-size:12px; color:var(--blue); font-weight:700; cursor:pointer;" onclick="resetFilters()">Reset</a></h3>
+
+          <div class="filter-group">
+            <label>Job Role</label>
+            <select id="fRole" onchange="applyFilters()"><option value="">All Roles</option></select>
+          </div>
+          <div class="filter-group">
+            <label>Location</label>
+            <select id="fLocation" onchange="applyFilters()"><option value="">All Locations</option></select>
+          </div>
+          <div class="filter-group">
+            <label>Experience Level</label>
+            <select id="fExperience" onchange="applyFilters()">
+              <option value="">Any Experience</option>
+              <option value="Fresher">Fresher (0 yrs)</option>
+              <option value="Junior">Junior (1–2 yrs)</option>
+              <option value="Mid">Mid (3–5 yrs)</option>
+              <option value="Senior">Senior (5+ yrs)</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label>Job Type</label>
+            <select id="fType" onchange="applyFilters()">
+              <option value="">Any Type</option>
+              <option>Full-time</option>
+              <option>Internship</option>
+              <option>Part-time</option>
+              <option>Remote</option>
+              <option>Contract</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label>Minimum Salary: <span id="salaryVal" class="mono">₹0L</span></label>
+            <input type="range" id="fSalary" min="0" max="40" value="0" step="1" oninput="document.getElementById('salaryVal').textContent='₹'+this.value+'L'; applyFilters()">
+          </div>
+        </aside>
+
+        <div>
+          <div class="results-top">
+            <div class="results-count">Showing <b id="resultCount">0</b> jobs</div>
+            <select class="sort-select" id="sortSelect" onchange="applyFilters()">
+              <option value="newest">Sort: Newest</option>
+              <option value="salaryHigh">Sort: Salary High → Low</option>
+              <option value="salaryLow">Sort: Salary Low → High</option>
+              <option value="az">Sort: Title A–Z</option>
+            </select>
+          </div>
+          <div class="jobs-grid-2" id="jobsResultGrid"></div>
+          <div class="pagination" id="pagination"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ============ JOB DETAILS PAGE ============ -->
+<div class="page" id="page-details">
+  <section class="section" style="padding-top:36px;" id="detailsContent"></section>
+</div>
+
+<!-- ============ SAVED JOBS PAGE ============ -->
+<div class="page" id="page-saved">
+  <section class="section" style="padding-top:36px;">
+    <div class="wrap">
+      <div class="section-head">
+        <div><h2>Saved Jobs</h2><p>Jobs you've bookmarked for later. Apply quickly when you're ready.</p></div>
+      </div>
+      <div class="jobs-grid-2" id="savedGrid" style="grid-template-columns:repeat(3,1fr);"></div>
+    </div>
+  </section>
+</div>
+
+<!-- ============ LOGIN / SIGNUP PAGE ============ -->
+<div class="page" id="page-login">
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <div class="auth-tabs">
+        <div class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')">Log In</div>
+        <div class="auth-tab" id="tabSignup" onclick="switchAuthTab('signup')">Sign Up</div>
+      </div>
+
+      <div id="authLoginForm">
+        <h2>Welcome back 👋</h2>
+        <p class="sub">Log in to save jobs, apply, and track your applications.</p>
+        <div class="demo-note">Demo account: <b>demo@scc.com</b> / <b>demo123</b></div>
+        <div class="form-field2"><label>Email</label><input type="email" id="li_email" placeholder="you@example.com"></div>
+        <div class="form-field2"><label>Password</label><input type="password" id="li_password" placeholder="••••••••"></div>
+        <div class="field-error" id="loginError"></div>
+        <button class="btn btn-primary" style="width:100%;" onclick="doLogin()">Log In →</button>
+        <p class="auth-foot">New here? <a style="color:var(--blue); font-weight:700; cursor:pointer;" onclick="switchAuthTab('signup')">Create an account</a></p>
+      </div>
+
+      <div id="authSignupForm" style="display:none;">
+        <h2>Create your account 🎓</h2>
+        <p class="sub">Join as a student or fresh graduate and start applying.</p>
+        <div class="form-field2"><label>Full Name</label><input type="text" id="su_name" placeholder="Priya Sharma"></div>
+        <div class="form-field2"><label>Email</label><input type="email" id="su_email" placeholder="you@example.com"></div>
+        <div class="form-field2"><label>Password</label><input type="password" id="su_password" placeholder="Min. 6 characters"></div>
+        <div class="field-error" id="signupError"></div>
+        <button class="btn btn-primary" style="width:100%;" onclick="doSignup()">Create Account →</button>
+        <p class="auth-foot">Already have an account? <a style="color:var(--blue); font-weight:700; cursor:pointer;" onclick="switchAuthTab('login')">Log in</a></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ PROFILE PAGE ============ -->
+<div class="page" id="page-profile">
+  <section class="section" style="padding-top:36px;">
+    <div class="wrap">
+      <div class="profile-grid">
+        <div class="profile-card">
+          <div class="profile-avatar" id="profAvatar">--</div>
+          <h3 id="profName" style="margin:0;">--</h3>
+          <p style="color:var(--sub); font-size:13.5px; margin:4px 0 0;" id="profEmail">--</p>
+          <div class="profile-stats">
+            <div><b id="profApplied">0</b><span>Applied</span></div>
+            <div><b id="profSavedCount">0</b><span>Saved</span></div>
+          </div>
+          <button class="btn btn-ghost" style="width:100%; margin-top:20px;" onclick="go('settings')">⚙️ Account Settings</button>
+        </div>
+
+        <div>
+          <div class="tab-row">
+            <div class="tab-item active" data-ptab="info" onclick="profTab('info')">Edit Profile</div>
+            <div class="tab-item" data-ptab="applied" onclick="profTab('applied')">Applied Jobs</div>
+          </div>
+
+          <div id="ptab-info">
+            <div class="detail-card">
+              <div class="form-grid">
+                <div class="form-field"><label>Full Name</label><input type="text" id="pf_name"></div>
+                <div class="form-field"><label>Email</label><input type="email" id="pf_email"></div>
+                <div class="form-field full"><label>Skills (comma separated)</label><input type="text" id="pf_skills" placeholder="React, Python, SQL"></div>
+                <div class="form-field full"><label>Bio</label><textarea id="pf_bio" placeholder="Tell employers a bit about yourself..."></textarea></div>
+              </div>
+              <div class="modal-actions" style="justify-content:flex-start; margin-top:22px;">
+                <button class="btn btn-primary" onclick="saveProfile()">💾 Save Changes</button>
+              </div>
+            </div>
+          </div>
+
+          <div id="ptab-applied" style="display:none;">
+            <div id="appliedJobsList"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ============ SETTINGS PAGE ============ -->
+<div class="page" id="page-settings">
+  <section class="section" style="padding-top:36px;">
+    <div class="wrap settings-grid">
+      <div class="section-head"><div><h2>Settings</h2><p>Manage your preferences and account.</p></div></div>
+
+      <div class="settings-block">
+        <h3>Appearance</h3>
+        <p class="hint">Choose how Smart Career Connect looks on your device.</p>
+        <div class="setting-row">
+          <div><div class="sr-label">Dark Mode</div><div class="sr-desc">Easier on the eyes in low light</div></div>
+          <button class="toggle-switch" id="settingThemeToggle" onclick="toggleTheme(); syncThemeToggle();"></button>
+        </div>
+      </div>
+
+      <div class="settings-block">
+        <h3>Notifications</h3>
+        <p class="hint">Control what updates you receive.</p>
+        <div class="setting-row">
+          <div><div class="sr-label">New job alerts</div><div class="sr-desc">Get notified about roles matching your skills</div></div>
+          <button class="toggle-switch on" id="notifJobs" onclick="this.classList.toggle('on')"></button>
+        </div>
+        <div class="setting-row">
+          <div><div class="sr-label">Application updates</div><div class="sr-desc">Status changes on jobs you've applied to</div></div>
+          <button class="toggle-switch on" id="notifApps" onclick="this.classList.toggle('on')"></button>
+        </div>
+      </div>
+
+      <div class="settings-block">
+        <h3>Security</h3>
+        <p class="hint">Update your password.</p>
+        <div class="form-field2"><label>Current Password</label><input type="password" id="set_curpass"></div>
+        <div class="form-field2"><label>New Password</label><input type="password" id="set_newpass"></div>
+        <button class="btn btn-primary btn-sm" onclick="changePassword()">Update Password</button>
+      </div>
+
+      <div class="settings-block" style="border-color:color-mix(in srgb, var(--danger) 30%, transparent);">
+        <h3 style="color:var(--danger);">Danger Zone</h3>
+        <p class="hint">Permanently delete your account and all saved data.</p>
+        <button class="btn btn-danger btn-sm" onclick="deleteAccount()">Delete My Account</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ============ ADMIN DASHBOARD ============ -->
+<div class="page" id="page-admin">
+  <div class="admin-shell">
+    <aside class="admin-side">
+      <div class="nav-link active" data-admin="overview" onclick="adminGo('overview')">📊 Overview</div>
+      <div class="nav-link" data-admin="manage" onclick="adminGo('manage')">🗂️ Manage Jobs</div>
+      <div class="nav-link" data-admin="add" onclick="openJobModal()">➕ Add New Job</div>
+    </aside>
+    <main class="admin-main">
+      <div id="admin-overview">
+        <h2 style="margin-top:0;">Dashboard Overview</h2>
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-top"><div class="kpi-ic" style="background:color-mix(in srgb, var(--blue) 14%, transparent); color:var(--blue);">💼</div></div>
+            <div class="kpi-val" id="kpiJobs">0</div><div class="kpi-label">Total Jobs</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-top"><div class="kpi-ic" style="background:color-mix(in srgb, var(--teal) 14%, transparent); color:var(--teal);">🏢</div></div>
+            <div class="kpi-val" id="kpiCompanies">0</div><div class="kpi-label">Companies</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-top"><div class="kpi-ic" style="background:color-mix(in srgb, var(--success) 16%, transparent); color:var(--success);">📨</div></div>
+            <div class="kpi-val" id="kpiApplications">0</div><div class="kpi-label">Total Applications</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-top"><div class="kpi-ic" style="background:color-mix(in srgb, var(--warn) 16%, transparent); color:var(--warn);">⭐</div></div>
+            <div class="kpi-val" id="kpiSaved">0</div><div class="kpi-label">Total Bookmarks</div>
+          </div>
+        </div>
+        <div class="admin-table-wrap" style="padding:22px;">
+          <h3 style="margin-top:0;">Most Popular Roles</h3>
+          <div id="popularRoles"></div>
+        </div>
+      </div>
+
+      <div id="admin-manage" style="display:none;">
+        <div class="section-head" style="margin-bottom:18px;">
+          <div><h2 style="margin:0;">Manage Job Listings</h2><p>Add, edit or remove postings.</p></div>
+          <button class="btn btn-primary" onclick="openJobModal()">➕ Add New Job</button>
+        </div>
+        <div class="admin-table-wrap">
+          <table>
+            <thead><tr><th>Job Title</th><th>Company</th><th>Location</th><th>Salary</th><th>Type</th><th>Posted</th><th>Actions</th></tr></thead>
+            <tbody id="adminTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- ============ JOB FORM MODAL (Admin Add/Edit) ============ -->
+<div class="modal-overlay" id="jobModal">
+  <div class="modal-box">
+    <h3 id="modalTitle">Add New Job</h3>
+    <div class="form-grid">
+      <div class="form-field"><label>Job Title</label><input type="text" id="m_jobTitle"></div>
+      <div class="form-field"><label>Company Name</label><input type="text" id="m_companyName"></div>
+      <div class="form-field"><label>Location</label><input type="text" id="m_location"></div>
+      <div class="form-field"><label>Job Type</label>
+        <select id="m_jobType"><option>Full-time</option><option>Internship</option><option>Part-time</option><option>Remote</option><option>Contract</option></select>
+      </div>
+      <div class="form-field"><label>Experience Level</label>
+        <select id="m_experience"><option>Fresher</option><option>Junior</option><option>Mid</option><option>Senior</option></select>
+      </div>
+      <div class="form-field"><label>Salary (₹ LPA)</label><input type="text" id="m_salary" placeholder="e.g. 6-10 LPA"></div>
+      <div class="form-field full"><label>Skills (comma separated)</label><input type="text" id="m_skills" placeholder="React, Node.js, MongoDB"></div>
+      <div class="form-field full"><label>Job Description</label><textarea id="m_description"></textarea></div>
+      <div class="form-field full"><label>Eligibility</label><input type="text" id="m_eligibility" placeholder="B.E/B.Tech, any discipline, 60%+"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeJobModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveJob()">💾 Save Job</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <div class="brand" style="color:#fff; margin-bottom:14px;"><span class="brand-mark">SC</span> Smart Career Connect</div>
+        <p style="max-width:320px; font-size:13.5px; line-height:1.7;">A modern job portal built for students, fresh graduates and placement cells — search smarter, apply faster.</p>
+      </div>
+      <div><h5>Explore</h5>
+        <a onclick="go('home')">Home</a><a onclick="go('jobs')">Find Jobs</a><a onclick="go('saved')">Saved Jobs</a>
+      </div>
+      <div><h5>For Admins</h5>
+        <a onclick="go('admin')">Dashboard</a><a onclick="openJobModal()">Post a Job</a>
+      </div>
+      <div><h5>Company</h5>
+        <a href="#">About</a><a href="#">Contact</a><a href="#">Privacy Policy</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Smart Career Connect. All rights reserved.</span>
+      <span>Made for students &amp; fresh graduates 🎓</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ===================================================================
+   SMART CAREER CONNECT — APPLICATION LOGIC
+   Single-page client app. Data persists in localStorage so the
+   Admin Dashboard, Saved Jobs and search/filter all stay in sync
+   without needing a backend server for this demo build.
+=================================================================== */
+
+/* ---------- 1. SAMPLE JOB DATA (28 jobs across 8+ roles) ---------- */
+const SEED_JOBS = [
+ {jobTitle:"Full Stack Developer", companyName:"Zoho Corporation", location:"Chennai", salary:"6-9 LPA", experience:"Junior", jobType:"Full-time", skills:["React","Node.js","MongoDB","Express"], description:"Build and maintain end-to-end web applications used by millions of Zoho customers. Work across the stack from database schema to pixel-perfect UI.", eligibility:"B.E/B.Tech (CSE/IT), 2024-2026 batch, 60%+ aggregate", postedDate:"2026-06-20"},
+ {jobTitle:"Software Developer", companyName:"TCS", location:"Bengaluru", salary:"4.5-6 LPA", experience:"Fresher", jobType:"Full-time", skills:["Java","SQL","DSA"], description:"Join TCS's flagship graduate program to build enterprise software solutions for global clients across banking, retail and healthcare.", eligibility:"Any UG/PG degree, 2025-2026 passouts", postedDate:"2026-06-18"},
+ {jobTitle:"Cyber Security Analyst", companyName:"Wipro", location:"Pune", salary:"5-7.5 LPA", experience:"Junior", jobType:"Full-time", skills:["Network Security","SIEM","Python","Ethical Hacking"], description:"Monitor security infrastructure, investigate incidents and harden systems against threats for enterprise clients.", eligibility:"B.Tech/B.E (CSE/ECE), CEH preferred", postedDate:"2026-06-22"},
+ {jobTitle:"Data Analyst", companyName:"Flipkart", location:"Bengaluru", salary:"6-8 LPA", experience:"Junior", jobType:"Full-time", skills:["SQL","Python","Power BI","Excel"], description:"Turn raw e-commerce data into actionable insights for category and supply-chain teams.", eligibility:"Any degree with strong quantitative skills", postedDate:"2026-06-15"},
+ {jobTitle:"AI Engineer", companyName:"Google", location:"Hyderabad", salary:"14-22 LPA", experience:"Mid", jobType:"Full-time", skills:["Python","TensorFlow","PyTorch","LLMs"], description:"Design and ship machine learning models powering Google's next generation of intelligent products.", eligibility:"B.Tech/M.Tech (CSE/AI/ML), strong ML fundamentals", postedDate:"2026-06-10"},
+ {jobTitle:"Cloud Engineer", companyName:"Amazon", location:"Hyderabad", salary:"10-16 LPA", experience:"Mid", jobType:"Full-time", skills:["AWS","Docker","Kubernetes","Terraform"], description:"Architect and operate scalable cloud infrastructure for AWS internal and customer-facing services.", eligibility:"B.Tech (any branch), AWS certification a plus", postedDate:"2026-06-12"},
+ {jobTitle:"UI/UX Designer", companyName:"Freshworks", location:"Chennai", salary:"5.5-8 LPA", experience:"Junior", jobType:"Full-time", skills:["Figma","User Research","Prototyping","Design Systems"], description:"Craft intuitive, delightful interfaces for Freshworks' suite of SaaS products used by 60,000+ businesses.", eligibility:"Design/HCI degree or strong portfolio", postedDate:"2026-06-19"},
+ {jobTitle:"Network Engineer", companyName:"HCLTech", location:"Noida", salary:"4-6 LPA", experience:"Fresher", jobType:"Full-time", skills:["CCNA","Routing & Switching","Firewalls"], description:"Configure, maintain and troubleshoot enterprise network infrastructure for global clients.", eligibility:"B.E/Diploma in ECE/CSE, CCNA preferred", postedDate:"2026-06-17"},
+ {jobTitle:"Full Stack Developer", companyName:"Swiggy", location:"Bengaluru", salary:"9-14 LPA", experience:"Mid", jobType:"Full-time", skills:["React","Node.js","PostgreSQL","Redis"], description:"Build high-scale ordering and logistics features used by millions of customers daily.", eligibility:"B.Tech/B.E, 2-4 years experience", postedDate:"2026-06-21"},
+ {jobTitle:"Software Developer Intern", companyName:"Microsoft", location:"Hyderabad", salary:"50,000/month", experience:"Fresher", jobType:"Internship", skills:["C#","Azure",".NET","DSA"], description:"6-month internship building features for Microsoft Cloud products with mentorship from senior engineers.", eligibility:"Pre-final year students, CSE/IT", postedDate:"2026-06-23"},
+ {jobTitle:"Data Analyst", companyName:"Paytm", location:"Noida", salary:"5.5-7 LPA", experience:"Junior", jobType:"Full-time", skills:["SQL","Python","Tableau","A/B Testing"], description:"Analyze transaction and user behaviour data to drive product decisions for Paytm's payments platform.", eligibility:"Any degree, strong analytical skills", postedDate:"2026-06-14"},
+ {jobTitle:"AI Engineer", companyName:"Adobe", location:"Bengaluru", salary:"16-24 LPA", experience:"Senior", jobType:"Full-time", skills:["Python","Computer Vision","Deep Learning","MLOps"], description:"Build generative AI features for Adobe Creative Cloud used by millions of creators worldwide.", eligibility:"M.Tech/M.S in AI/ML, 5+ years experience", postedDate:"2026-06-08"},
+ {jobTitle:"Cloud Engineer", companyName:"IBM", location:"Pune", salary:"8-12 LPA", experience:"Junior", jobType:"Full-time", skills:["Azure","Kubernetes","CI/CD","Linux"], description:"Support hybrid-cloud deployments and automation pipelines for enterprise customers.", eligibility:"B.E/B.Tech, cloud certification preferred", postedDate:"2026-06-16"},
+ {jobTitle:"UI/UX Designer Intern", companyName:"CRED", location:"Bengaluru", salary:"30,000/month", experience:"Fresher", jobType:"Internship", skills:["Figma","Motion Design","Wireframing"], description:"Work directly with senior designers crafting premium fintech experiences.", eligibility:"Design students, strong portfolio required", postedDate:"2026-06-24"},
+ {jobTitle:"Cyber Security Analyst", companyName:"Accenture", location:"Mumbai", salary:"6-9 LPA", experience:"Junior", jobType:"Full-time", skills:["SOC Operations","Threat Intel","Splunk"], description:"Protect client infrastructure as part of Accenture's global Security Operations Center.", eligibility:"B.Tech (any branch), security certifications a plus", postedDate:"2026-06-11"},
+ {jobTitle:"Network Engineer", companyName:"Tech Mahindra", location:"Pune", salary:"4.5-6.5 LPA", experience:"Junior", jobType:"Full-time", skills:["MPLS","SD-WAN","Cisco","Troubleshooting"], description:"Maintain telecom-grade network infrastructure for enterprise and ISP clients.", eligibility:"B.E/B.Tech (ECE/CSE)", postedDate:"2026-06-13"},
+ {jobTitle:"Full Stack Developer", companyName:"Razorpay", location:"Bengaluru", salary:"12-18 LPA", experience:"Mid", jobType:"Full-time", skills:["React","TypeScript","Node.js","AWS"], description:"Build secure, high-throughput payment infrastructure trusted by lakhs of businesses.", eligibility:"B.Tech, 3+ years experience", postedDate:"2026-06-09"},
+ {jobTitle:"Data Analyst Intern", companyName:"Infosys", location:"Bengaluru", salary:"20,000/month", experience:"Fresher", jobType:"Internship", skills:["SQL","Excel","Python"], description:"Support business analytics teams with reporting and dashboarding for client engagements.", eligibility:"Final year students, any degree", postedDate:"2026-06-22"},
+ {jobTitle:"DevOps Engineer", companyName:"Cognizant", location:"Chennai", salary:"7-11 LPA", experience:"Junior", jobType:"Full-time", skills:["Jenkins","Docker","AWS","Ansible"], description:"Automate build, test and deployment pipelines for global enterprise applications.", eligibility:"B.E/B.Tech, scripting knowledge required", postedDate:"2026-06-19"},
+ {jobTitle:"Mobile App Developer", companyName:"PhonePe", location:"Bengaluru", salary:"9-13 LPA", experience:"Junior", jobType:"Full-time", skills:["Kotlin","Android","Flutter","REST APIs"], description:"Build and ship features in India's most-used digital payments app.", eligibility:"B.Tech, 1-3 years Android/Flutter experience", postedDate:"2026-06-07"},
+ {jobTitle:"Business Analyst", companyName:"Deloitte", location:"Gurugram", salary:"6.5-9.5 LPA", experience:"Junior", jobType:"Full-time", skills:["Excel","SQL","Stakeholder Management","Power BI"], description:"Bridge business needs and technology teams across consulting engagements.", eligibility:"Any degree, MBA preferred", postedDate:"2026-06-06"},
+ {jobTitle:"QA Engineer", companyName:"Zoho Corporation", location:"Chennai", salary:"5-7 LPA", experience:"Fresher", jobType:"Full-time", skills:["Selenium","Manual Testing","API Testing","JIRA"], description:"Ensure product quality across Zoho's suite of business applications through manual and automated testing.", eligibility:"B.E/B.Tech, any branch", postedDate:"2026-06-05"},
+ {jobTitle:"Blockchain Developer", companyName:"Polygon", location:"Remote", salary:"15-22 LPA", experience:"Mid", jobType:"Remote", skills:["Solidity","Web3.js","Smart Contracts","Ethereum"], description:"Build and audit smart contracts powering decentralized applications at scale.", eligibility:"B.Tech, blockchain project experience required", postedDate:"2026-06-04"},
+ {jobTitle:"Product Manager", companyName:"Myntra", location:"Bengaluru", salary:"18-26 LPA", experience:"Senior", jobType:"Full-time", skills:["Product Strategy","Analytics","Roadmapping","Agile"], description:"Own the product roadmap for Myntra's personalization and discovery experience.", eligibility:"B.Tech/MBA, 5+ years product experience", postedDate:"2026-06-03"},
+ {jobTitle:"Cloud Engineer Intern", companyName:"Salesforce", location:"Hyderabad", salary:"45,000/month", experience:"Fresher", jobType:"Internship", skills:["AWS","Linux","Python","Networking"], description:"Hands-on internship supporting Salesforce's cloud infrastructure team.", eligibility:"Pre-final/final year students, CSE/IT", postedDate:"2026-06-02"},
+ {jobTitle:"AI Engineer", companyName:"Fractal Analytics", location:"Mumbai", salary:"10-15 LPA", experience:"Junior", jobType:"Full-time", skills:["Python","NLP","Scikit-learn","SQL"], description:"Build ML-driven analytics solutions for Fortune 500 clients across industries.", eligibility:"B.Tech/M.Tech, strong stats foundation", postedDate:"2026-06-01"},
+ {jobTitle:"UI/UX Designer", companyName:"Ola", location:"Bengaluru", salary:"8-12 LPA", experience:"Junior", jobType:"Full-time", skills:["Figma","Interaction Design","User Testing"], description:"Design seamless mobility and delivery experiences for millions of daily Ola users.", eligibility:"Design degree/portfolio, 1-3 years experience", postedDate:"2026-05-30"},
+ {jobTitle:"Network Engineer", companyName:"Reliance Jio", location:"Mumbai", salary:"5-7.5 LPA", experience:"Junior", jobType:"Full-time", skills:["4G/5G","Routing","Network Monitoring"], description:"Maintain and optimize telecom network infrastructure across one of India's largest networks.", eligibility:"B.E/B.Tech (ECE/Telecom)", postedDate:"2026-05-28"},
+ {jobTitle:"Full Stack Developer", companyName:"CRED", location:"Bengaluru", salary:"13-19 LPA", experience:"Mid", jobType:"Full-time", skills:["React","Node.js","GraphQL","AWS"], description:"Build premium, high-trust fintech experiences for CRED's growing member base.", eligibility:"B.Tech, 3+ years experience", postedDate:"2026-05-25"},
+];
+
+/* assign ids + applications counter */
+let jobs = SEED_JOBS.map((j,i)=>({...j, id:i+1, applications: Math.floor(Math.random()*120)+5}));
+
+/* ---------- 2. STORAGE LAYER ---------- */
+const LS_JOBS="scc_jobs", LS_SAVED="scc_saved", LS_THEME="scc_theme", LS_USERS="scc_users", LS_CURRENT="scc_current_user";
+function loadJobs(){ const s=localStorage.getItem(LS_JOBS); jobs = s? JSON.parse(s) : jobs; if(!s) persistJobs(); }
+function persistJobs(){ localStorage.setItem(LS_JOBS, JSON.stringify(jobs)); }
+function getSaved(){ const u=getCurrentUser(); const key = u? 'scc_saved_'+u.id : LS_SAVED; return JSON.parse(localStorage.getItem(key) || "[]"); }
+function setSaved(arr){ const u=getCurrentUser(); const key = u? 'scc_saved_'+u.id : LS_SAVED; localStorage.setItem(key, JSON.stringify(arr)); updateSavedCount(); }
+function isSaved(id){ return getSaved().includes(id); }
+
+/* ---------- 2b. USERS / AUTH ---------- */
+function getUsers(){ return JSON.parse(localStorage.getItem(LS_USERS) || "[]"); }
+function saveUsers(arr){ localStorage.setItem(LS_USERS, JSON.stringify(arr)); }
+function saveUser(user){ const users=getUsers(); const idx=users.findIndex(u=>u.id===user.id); if(idx>-1) users[idx]=user; saveUsers(users); localStorage.setItem(LS_CURRENT, JSON.stringify(user)); }
+function getCurrentUser(){ const s=localStorage.getItem(LS_CURRENT); return s? JSON.parse(s) : null; }
+function seedDemoUser(){
+  let users = getUsers();
+  if(!users.find(u=>u.email==='demo@scc.com')){
+    users.push({id:1, name:'Demo Student', email:'demo@scc.com', password:'demo123', skills:['React','Python'], bio:'Final year CSE student exploring full-stack roles.', appliedJobs:[]});
+    saveUsers(users);
+  }
+}
+function switchAuthTab(tab){
+  document.getElementById('tabLogin').classList.toggle('active', tab==='login');
+  document.getElementById('tabSignup').classList.toggle('active', tab==='signup');
+  document.getElementById('authLoginForm').style.display = tab==='login' ? 'block':'none';
+  document.getElementById('authSignupForm').style.display = tab==='signup' ? 'block':'none';
+}
+function doLogin(){
+  const email = document.getElementById('li_email').value.trim().toLowerCase();
+  const pass = document.getElementById('li_password').value;
+  const err = document.getElementById('loginError');
+  const user = getUsers().find(u=>u.email.toLowerCase()===email && u.password===pass);
+  if(!user){ err.textContent='Incorrect email or password.'; err.style.display='block'; return; }
+  err.style.display='none';
+  localStorage.setItem(LS_CURRENT, JSON.stringify(user));
+  toast(`Welcome back, ${user.name.split(' ')[0]}! 👋`,'✅');
+  renderAuthArea(); updateSavedCount();
+  go('home');
+}
+function doSignup(){
+  const name = document.getElementById('su_name').value.trim();
+  const email = document.getElementById('su_email').value.trim().toLowerCase();
+  const pass = document.getElementById('su_password').value;
+  const err = document.getElementById('signupError');
+  if(!name || !email || pass.length<6){ err.textContent='Please fill all fields — password needs 6+ characters.'; err.style.display='block'; return; }
+  if(getUsers().find(u=>u.email.toLowerCase()===email)){ err.textContent='An account with this email already exists.'; err.style.display='block'; return; }
+  err.style.display='none';
+  const users = getUsers();
+  const newUser = {id:Date.now(), name, email, password:pass, skills:[], bio:'', appliedJobs:[]};
+  users.push(newUser); saveUsers(users);
+  localStorage.setItem(LS_CURRENT, JSON.stringify(newUser));
+  toast(`Account created — welcome, ${name.split(' ')[0]}! 🎉`,'🎉');
+  renderAuthArea(); updateSavedCount();
+  go('home');
+}
+function doLogout(){
+  localStorage.removeItem(LS_CURRENT);
+  toast('Logged out successfully','👋');
+  renderAuthArea(); updateSavedCount();
+  go('home');
+}
+function toggleAvatarMenu(){ document.getElementById('avatarMenu').classList.toggle('open'); }
+document.addEventListener('click', e=>{
+  const wrap = document.getElementById('avatarWrap');
+  if(wrap && !wrap.contains(e.target)) document.getElementById('avatarMenu')?.classList.remove('open');
+});
+function renderAuthArea(){
+  const user = getCurrentUser();
+  const area = document.getElementById('authArea');
+  if(!user){
+    area.innerHTML = `<button class="btn btn-ghost" onclick="go('login')">Log In</button>
+      <button class="btn btn-primary" onclick="go('login'); switchAuthTab('signup');">Sign Up</button>`;
+    return;
+  }
+  area.innerHTML = `
+    <div class="avatar-wrap" id="avatarWrap">
+      <div class="avatar-circle" onclick="toggleAvatarMenu()">${initials(user.name)}</div>
+      <div class="avatar-menu" id="avatarMenu">
+        <div class="am-head"><b>${user.name}</b><span>${user.email}</span></div>
+        <a onclick="go('profile'); toggleAvatarMenu();">👤 My Profile</a>
+        <a onclick="go('saved'); toggleAvatarMenu();">♥ Saved Jobs</a>
+        <a onclick="go('settings'); toggleAvatarMenu();">⚙️ Settings</a>
+        <a onclick="go('admin'); toggleAvatarMenu();">🗂️ Admin Dashboard</a>
+        <a onclick="doLogout(); toggleAvatarMenu();" style="color:var(--danger);">🚪 Log Out</a>
+      </div>
+    </div>`;
+}
+
+/* ---------- 3. TOAST ---------- */
+function toast(msg, icon="✅"){
+  const wrap=document.getElementById('toastWrap');
+  const el=document.createElement('div'); el.className='toast'; el.innerHTML=`<span>${icon}</span><span>${msg}</span>`;
+  wrap.appendChild(el); setTimeout(()=>{el.style.opacity='0'; el.style.transform='translateX(30px)'; setTimeout(()=>el.remove(),300);}, 2600);
+}
+
+/* ---------- 4. THEME ---------- */
+function toggleTheme(){
+  const cur = document.body.getAttribute('data-theme');
+  const next = cur==='light' ? 'dark' : 'light';
+  document.body.setAttribute('data-theme', next);
+  document.getElementById('themeBtn').textContent = next==='dark' ? '☀️' : '🌙';
+  localStorage.setItem(LS_THEME, next);
+}
+(function initTheme(){
+  const saved = localStorage.getItem(LS_THEME) || 'light';
+  document.body.setAttribute('data-theme', saved);
+  document.getElementById('themeBtn').textContent = saved==='dark' ? '☀️' : '🌙';
+})();
+
+/* ---------- 5. ROUTING ---------- */
+let currentJobId = null;
+function go(page, params){
+  if((page==='saved' || page==='profile' || page==='settings') && !getCurrentUser()){
+    toast('Please log in to continue','🔒');
+    page = 'login';
+  }
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  document.querySelectorAll('.nav-link').forEach(l=>l.classList.toggle('active', l.dataset.page===page));
+  window.scrollTo({top:0, behavior:'smooth'});
+  if(page==='jobs') renderJobsPage();
+  if(page==='saved') renderSavedPage();
+  if(page==='admin') renderAdmin();
+  if(page==='home') renderHome();
+  if(page==='profile') renderProfile();
+  if(page==='settings') syncThemeToggle();
+}
+function viewDetails(id){
+  currentJobId = id;
+  go('details');
+  renderDetails(id);
+}
+
+/* ---------- 6. DERIVED LOOKUPS ---------- */
+function uniq(arr){ return [...new Set(arr)]; }
+function allLocations(){ return uniq(jobs.map(j=>j.location)).sort(); }
+function allRoles(){ return uniq(jobs.map(j=>j.jobTitle.replace(' Intern',''))).sort(); }
+function allCompanies(){ return uniq(jobs.map(j=>j.companyName)); }
+
+function populateSelectors(){
+  const heroLoc = document.getElementById('heroLocation');
+  const fLoc = document.getElementById('fLocation');
+  const fRole = document.getElementById('fRole');
+  [heroLoc, fLoc].forEach(sel=>{
+    while(sel.options.length>1) sel.remove(1);
+    allLocations().forEach(loc=>{ const o=document.createElement('option'); o.value=loc; o.textContent=loc; sel.appendChild(o); });
+  });
+  while(fRole.options.length>1) fRole.remove(1);
+  allRoles().forEach(r=>{ const o=document.createElement('option'); o.value=r; o.textContent=r; fRole.appendChild(o); });
+}
+
+function expClass(exp){
+  return {Fresher:'exp-fresher', Junior:'exp-junior', Mid:'exp-mid', Senior:'exp-senior'}[exp] || 'exp-junior';
+}
+function initials(name){ return name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase(); }
+function salaryToNum(s){
+  const m = s.match(/(\d+(\.\d+)?)/g);
+  if(!m) return 0;
+  if(s.toLowerCase().includes('month')) return parseFloat(m[0])/100000*12; // monthly stipend → approx LPA
+  return parseFloat(m[m.length-1]); // take the higher bound for sorting/filtering
+}
+
+/* ---------- 7. JOB CARD RENDERER ---------- */
+function jobCardHTML(j){
+  const saved = isSaved(j.id);
+  return `
+  <div class="job-card">
+    <div class="job-top">
+      <div style="display:flex; gap:12px;">
+        <div class="job-logo">${initials(j.companyName)}</div>
+        <div>
+          <p class="job-title">${j.jobTitle}</p>
+          <p class="job-company">${j.companyName}</p>
+        </div>
+      </div>
+      <button class="bookmark-btn ${saved?'saved':''}" onclick="toggleSave(event,${j.id})" title="Save job">${saved?'♥':'♡'}</button>
+    </div>
+    <div class="job-meta">
+      <span>📍 ${j.location}</span>
+      <span>🕒 ${j.jobType}</span>
+      <span class="exp-pill ${expClass(j.experience)}">${j.experience}</span>
+    </div>
+    <div class="job-tags">${j.skills.slice(0,3).map(s=>`<span class="tag">${s}</span>`).join('')}</div>
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <span class="job-salary mono">₹ ${j.salary}</span>
+      <span style="font-size:12px; color:var(--sub);">${timeAgo(j.postedDate)}</span>
+    </div>
+    <div class="job-actions">
+      <button class="btn btn-ghost btn-sm" onclick="viewDetails(${j.id})">View Details</button>
+      <button class="btn btn-primary btn-sm" onclick="applyJob(event,${j.id})">Apply Now</button>
+    </div>
+  </div>`;
+}
+function timeAgo(dateStr){
+  const diff = Math.floor((new Date('2026-06-25') - new Date(dateStr)) / 86400000);
+  if(diff<=0) return 'Today';
+  if(diff===1) return '1 day ago';
+  if(diff<30) return diff+' days ago';
+  return Math.floor(diff/30)+' mo ago';
+}
+
+/* ---------- 8. SAVE / APPLY ACTIONS ---------- */
+function toggleSave(e, id){
+  e.stopPropagation();
+  if(!getCurrentUser()){ toast('Log in to save jobs','🔒'); go('login'); return; }
+  let saved = getSaved();
+  if(saved.includes(id)){ saved = saved.filter(x=>x!==id); toast('Removed from saved jobs','🗑️'); }
+  else { saved.push(id); toast('Job saved to your list','💾'); }
+  setSaved(saved);
+  refreshCurrentView();
+}
+function applyJob(e, id){
+  if(e) e.stopPropagation();
+  const user = getCurrentUser();
+  if(!user){ toast('Log in to apply for jobs','🔒'); go('login'); return; }
+  const job = jobs.find(j=>j.id===id);
+  job.applications = (job.applications||0)+1;
+  persistJobs();
+  if(!user.appliedJobs.includes(id)){ user.appliedJobs.push(id); saveUser(user); }
+  toast(`Application submitted to ${job.companyName} 🎉`,'🚀');
+}
+function refreshCurrentView(){
+  const active = document.querySelector('.page.active').id;
+  if(active==='page-home') renderHome();
+  if(active==='page-jobs') applyFilters();
+  if(active==='page-saved') renderSavedPage();
+  if(active==='page-details' && currentJobId) renderDetails(currentJobId);
+}
+function updateSavedCount(){ document.getElementById('savedCount').textContent = getSaved().length; }
+
+/* ---------- 9. HOME PAGE RENDER ---------- */
+function renderHome(){
+  document.getElementById('statJobs').textContent = jobs.length+'+';
+  document.getElementById('statCompanies').textContent = allCompanies().length+'+';
+  document.getElementById('statLocations').textContent = allLocations().length+'+';
+  document.getElementById('statRoles').textContent = allRoles().length+'+';
+
+  const featured = [...jobs].sort((a,b)=> b.applications - a.applications).slice(0,6);
+  document.getElementById('featuredGrid').innerHTML = featured.map(jobCardHTML).join('');
+
+  const roleIcons = {"Full Stack Developer":"💻","Software Developer":"🖥️","Cyber Security Analyst":"🛡️","Data Analyst":"📊","AI Engineer":"🤖","Cloud Engineer":"☁️","UI/UX Designer":"🎨","Network Engineer":"🌐","DevOps Engineer":"⚙️","Mobile App Developer":"📱","Business Analyst":"📈","QA Engineer":"🧪","Blockchain Developer":"🔗","Product Manager":"🧭"};
+  const roleCounts = {};
+  jobs.forEach(j=>{ const r=j.jobTitle.replace(' Intern',''); roleCounts[r]=(roleCounts[r]||0)+1; });
+  const topRoles = Object.entries(roleCounts).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  document.getElementById('rolesGrid').innerHTML = topRoles.map(([role,count])=>`
+    <div class="job-card" style="cursor:pointer; align-items:flex-start;" onclick="document.getElementById('fRole') && (filterByRole('${role.replace(/'/g,"\\'")}'))">
+      <div style="font-size:30px;">${roleIcons[role]||'💼'}</div>
+      <p class="job-title" style="margin-top:6px;">${role}</p>
+      <p class="job-company">${count} open position${count>1?'s':''}</p>
+    </div>`).join('');
+
+  const suggestions = ["React Developer","Data Analyst","AI Engineer","Remote Jobs","Internship","Cyber Security"];
+  document.getElementById('suggestRow').innerHTML = suggestions.map(s=>`<span class="chip" onclick="document.getElementById('heroSearch').value='${s}'; runHeroSearch();">${s}</span>`).join('');
+}
+function filterByRole(role){
+  go('jobs');
+  setTimeout(()=>{ document.getElementById('fRole').value = role; applyFilters(); }, 50);
+}
+function runHeroSearch(){
+  const q = document.getElementById('heroSearch').value;
+  const loc = document.getElementById('heroLocation').value;
+  go('jobs');
+  setTimeout(()=>{
+    document.getElementById('jobsSearch').value = q;
+    document.getElementById('fLocation').value = loc;
+    applyFilters();
+  }, 50);
+}
+
+/* ---------- 10. JOBS / SEARCH & FILTER PAGE ---------- */
+let currentPage = 1;
+const PAGE_SIZE = 6;
+function resetFilters(){
+  document.getElementById('jobsSearch').value='';
+  document.getElementById('fRole').value='';
+  document.getElementById('fLocation').value='';
+  document.getElementById('fExperience').value='';
+  document.getElementById('fType').value='';
+  document.getElementById('fSalary').value=0;
+  document.getElementById('salaryVal').textContent='₹0L';
+  applyFilters();
+}
+function getFilteredJobs(){
+  const q = (document.getElementById('jobsSearch')?.value || '').toLowerCase().trim();
+  const role = document.getElementById('fRole')?.value || '';
+  const loc = document.getElementById('fLocation')?.value || '';
+  const exp = document.getElementById('fExperience')?.value || '';
+  const type = document.getElementById('fType')?.value || '';
+  const minSalary = parseInt(document.getElementById('fSalary')?.value || 0);
+  const sort = document.getElementById('sortSelect')?.value || 'newest';
+
+  let result = jobs.filter(j=>{
+    const matchesQuery = !q || j.jobTitle.toLowerCase().includes(q) || j.companyName.toLowerCase().includes(q) || j.skills.some(s=>s.toLowerCase().includes(q));
+    const matchesRole = !role || j.jobTitle.includes(role);
+    const matchesLoc = !loc || j.location===loc;
+    const matchesExp = !exp || j.experience===exp;
+    const matchesType = !type || j.jobType===type;
+    const matchesSalary = salaryToNum(j.salary) >= minSalary;
+    return matchesQuery && matchesRole && matchesLoc && matchesExp && matchesType && matchesSalary;
+  });
+
+  if(sort==='salaryHigh') result.sort((a,b)=>salaryToNum(b.salary)-salaryToNum(a.salary));
+  else if(sort==='salaryLow') result.sort((a,b)=>salaryToNum(a.salary)-salaryToNum(b.salary));
+  else if(sort==='az') result.sort((a,b)=>a.jobTitle.localeCompare(b.jobTitle));
+  else result.sort((a,b)=> new Date(b.postedDate)-new Date(a.postedDate));
+
+  return result;
+}
+function applyFilters(){
+  currentPage = 1;
+  renderJobsResults();
+}
+function renderJobsResults(){
+  const result = getFilteredJobs();
+  document.getElementById('resultCount').textContent = result.length;
+  const grid = document.getElementById('jobsResultGrid');
+
+  if(result.length===0){
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;">
+      <div class="big-ic">🔎</div><h3>No jobs match your filters</h3>
+      <p>Try adjusting your search keywords or clearing some filters.</p>
+      <button class="btn btn-primary" style="margin-top:14px;" onclick="resetFilters()">Reset Filters</button>
+    </div>`;
+    document.getElementById('pagination').innerHTML='';
+    return;
+  }
+
+  const totalPages = Math.ceil(result.length / PAGE_SIZE);
+  currentPage = Math.min(currentPage, totalPages);
+  const pageItems = result.slice((currentPage-1)*PAGE_SIZE, currentPage*PAGE_SIZE);
+  grid.innerHTML = pageItems.map(jobCardHTML).join('');
+
+  let pagHtml = '';
+  for(let i=1;i<=totalPages;i++){
+    pagHtml += `<button class="page-btn ${i===currentPage?'active':''}" onclick="currentPage=${i}; renderJobsResults();">${i}</button>`;
+  }
+  document.getElementById('pagination').innerHTML = pagHtml;
+}
+function renderJobsPage(){
+  populateSelectors();
+  // show a brief skeleton loading animation for polish
+  const grid = document.getElementById('jobsResultGrid');
+  grid.innerHTML = Array(4).fill(`<div class="skeleton" style="height:230px;"></div>`).join('');
+  setTimeout(renderJobsResults, 280);
+}
+
+/* ---------- 11. JOB DETAILS PAGE ---------- */
+function renderDetails(id){
+  const j = jobs.find(x=>x.id===id);
+  const saved = isSaved(id);
+  if(!j){ document.getElementById('detailsContent').innerHTML = `<div class="wrap empty-state"><h3>Job not found</h3></div>`; return; }
+  document.getElementById('detailsContent').innerHTML = `
+  <div class="wrap">
+    <a style="color:var(--blue); font-weight:700; font-size:13.5px; cursor:pointer;" onclick="go('jobs')">← Back to Jobs</a>
+    <div class="details-grid" style="margin-top:18px;">
+      <div class="detail-card">
+        <div class="detail-header">
+          <div class="detail-logo">${initials(j.companyName)}</div>
+          <div>
+            <h1>${j.jobTitle}</h1>
+            <p style="color:var(--sub); margin:0;">${j.companyName} · 📍 ${j.location}</p>
+            <div class="job-tags" style="margin-top:10px;">
+              <span class="exp-pill ${expClass(j.experience)}">${j.experience}</span>
+              <span class="tag">${j.jobType}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="detail-block">
+          <h4>Job Description</h4>
+          <p>${j.description}</p>
+        </div>
+        <div class="detail-block">
+          <h4>Required Skills</h4>
+          <div class="job-tags">${j.skills.map(s=>`<span class="tag">${s}</span>`).join('')}</div>
+        </div>
+        <div class="detail-block">
+          <h4>Eligibility</h4>
+          <p>${j.eligibility || 'Open to all eligible candidates meeting role requirements.'}</p>
+        </div>
+        <div class="detail-block">
+          <h4>Company Information</h4>
+          <p>${j.companyName} is hiring for ${allLocations().length} locations across India with ${jobs.filter(x=>x.companyName===j.companyName).length} active opening(s) on Smart Career Connect.</p>
+        </div>
+      </div>
+
+      <div>
+        <div class="side-card">
+          <div class="row"><span>Salary Package</span><span class="mono">₹ ${j.salary}</span></div>
+          <div class="row"><span>Job Type</span><span>${j.jobType}</span></div>
+          <div class="row"><span>Experience</span><span>${j.experience}</span></div>
+          <div class="row"><span>Location</span><span>${j.location}</span></div>
+          <div class="row"><span>Posted</span><span>${timeAgo(j.postedDate)}</span></div>
+          <div class="row"><span>Applicants</span><span>${j.applications}</span></div>
+        </div>
+        <button class="btn btn-primary" style="width:100%; margin-bottom:10px;" onclick="applyJob(null,${j.id})">🚀 Apply Now</button>
+        <button class="btn ${saved?'btn-danger':'btn-ghost'}" style="width:100%;" onclick="toggleSave(event,${j.id}); renderDetails(${j.id});">${saved?'♥ Remove Saved Job':'♡ Save Job'}</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ---------- 12. SAVED JOBS PAGE ---------- */
+function renderSavedPage(){
+  const savedIds = getSaved();
+  const savedJobs = jobs.filter(j=>savedIds.includes(j.id));
+  const grid = document.getElementById('savedGrid');
+  if(savedJobs.length===0){
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;">
+      <div class="big-ic">💼</div><h3>No saved jobs yet</h3>
+      <p>Bookmark jobs you like and they'll show up here for quick access.</p>
+      <button class="btn btn-primary" style="margin-top:14px;" onclick="go('jobs')">Browse Jobs</button>
+    </div>`;
+    return;
+  }
+  grid.innerHTML = savedJobs.map(jobCardHTML).join('');
+}
+
+/* ---------- 13. ADMIN DASHBOARD ---------- */
+function adminGo(section){
+  document.querySelectorAll('[data-admin]').forEach(el=>el.classList.toggle('active', el.dataset.admin===section));
+  document.getElementById('admin-overview').style.display = section==='overview' ? 'block':'none';
+  document.getElementById('admin-manage').style.display = section==='manage' ? 'block':'none';
+}
+function renderAdmin(){
+  document.getElementById('kpiJobs').textContent = jobs.length;
+  document.getElementById('kpiCompanies').textContent = allCompanies().length;
+  document.getElementById('kpiApplications').textContent = jobs.reduce((s,j)=>s+(j.applications||0),0);
+  document.getElementById('kpiSaved').textContent = getSaved().length;
+
+  const roleCounts = {};
+  jobs.forEach(j=>{ const r=j.jobTitle.replace(' Intern',''); roleCounts[r]=(roleCounts[r]||0)+1; });
+  const top = Object.entries(roleCounts).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  const maxCount = top.length? top[0][1] : 1;
+  document.getElementById('popularRoles').innerHTML = top.map(([role,count])=>`
+    <div style="margin-bottom:12px;">
+      <div style="display:flex; justify-content:space-between; font-size:13.5px; margin-bottom:6px;"><span>${role}</span><span class="mono">${count}</span></div>
+      <div style="height:8px; border-radius:6px; background:var(--line); overflow:hidden;">
+        <div style="height:100%; width:${(count/maxCount)*100}%; background:linear-gradient(90deg,var(--blue),var(--teal));"></div>
+      </div>
+    </div>`).join('');
+
+  document.getElementById('adminTableBody').innerHTML = jobs.map(j=>`
+    <tr>
+      <td><b>${j.jobTitle}</b></td>
+      <td>${j.companyName}</td>
+      <td>${j.location}</td>
+      <td class="mono">₹${j.salary}</td>
+      <td><span class="tag">${j.jobType}</span></td>
+      <td>${timeAgo(j.postedDate)}</td>
+      <td><div class="row-actions">
+        <button onclick="openJobModal(${j.id})" title="Edit">✏️</button>
+        <button onclick="deleteJob(${j.id})" title="Delete">🗑️</button>
+      </div></td>
+    </tr>`).join('');
+}
+let editingId = null;
+function openJobModal(id){
+  editingId = id || null;
+  document.getElementById('modalTitle').textContent = id ? 'Edit Job' : 'Add New Job';
+  const j = id ? jobs.find(x=>x.id===id) : null;
+  document.getElementById('m_jobTitle').value = j?j.jobTitle:'';
+  document.getElementById('m_companyName').value = j?j.companyName:'';
+  document.getElementById('m_location').value = j?j.location:'';
+  document.getElementById('m_jobType').value = j?j.jobType:'Full-time';
+  document.getElementById('m_experience').value = j?j.experience:'Fresher';
+  document.getElementById('m_salary').value = j?j.salary:'';
+  document.getElementById('m_skills').value = j?j.skills.join(', '):'';
+  document.getElementById('m_description').value = j?j.description:'';
+  document.getElementById('m_eligibility').value = j?j.eligibility:'';
+  document.getElementById('jobModal').classList.add('open');
+  go('admin'); adminGo('manage');
+}
+function closeJobModal(){ document.getElementById('jobModal').classList.remove('open'); }
+function saveJob(){
+  const title = document.getElementById('m_jobTitle').value.trim();
+  const company = document.getElementById('m_companyName').value.trim();
+  if(!title || !company){ toast('Job title and company are required','⚠️'); return; }
+  const data = {
+    jobTitle:title, companyName:company,
+    location:document.getElementById('m_location').value.trim()||'Remote',
+    jobType:document.getElementById('m_jobType').value,
+    experience:document.getElementById('m_experience').value,
+    salary:document.getElementById('m_salary').value.trim()||'Not disclosed',
+    skills:document.getElementById('m_skills').value.split(',').map(s=>s.trim()).filter(Boolean),
+    description:document.getElementById('m_description').value.trim()||'No description provided.',
+    eligibility:document.getElementById('m_eligibility').value.trim(),
+  };
+  if(editingId){
+    const idx = jobs.findIndex(j=>j.id===editingId);
+    jobs[idx] = {...jobs[idx], ...data};
+    toast('Job updated successfully','✏️');
+  } else {
+    const newId = Math.max(0,...jobs.map(j=>j.id))+1;
+    jobs.push({...data, id:newId, postedDate:new Date().toISOString().slice(0,10), applications:0});
+    toast('New job posted successfully','🎉');
+  }
+  persistJobs();
+  closeJobModal();
+  renderAdmin();
+  populateSelectors();
+}
+function deleteJob(id){
+  if(!confirm('Delete this job listing? This cannot be undone.')) return;
+  jobs = jobs.filter(j=>j.id!==id);
+  persistJobs();
+  let saved = getSaved().filter(x=>x!==id); setSaved(saved);
+  renderAdmin();
+  toast('Job listing deleted','🗑️');
+}
+
+/* ---------- 14b. PROFILE PAGE ---------- */
+function profTab(tab){
+  document.querySelectorAll('[data-ptab]').forEach(el=>el.classList.toggle('active', el.dataset.ptab===tab));
+  document.getElementById('ptab-info').style.display = tab==='info' ? 'block':'none';
+  document.getElementById('ptab-applied').style.display = tab==='applied' ? 'block':'none';
+}
+function renderProfile(){
+  const user = getCurrentUser();
+  if(!user) return;
+  document.getElementById('profAvatar').textContent = initials(user.name);
+  document.getElementById('profName').textContent = user.name;
+  document.getElementById('profEmail').textContent = user.email;
+  document.getElementById('profApplied').textContent = (user.appliedJobs||[]).length;
+  document.getElementById('profSavedCount').textContent = getSaved().length;
+  document.getElementById('pf_name').value = user.name;
+  document.getElementById('pf_email').value = user.email;
+  document.getElementById('pf_skills').value = (user.skills||[]).join(', ');
+  document.getElementById('pf_bio').value = user.bio||'';
+
+  const appliedJobs = jobs.filter(j=>(user.appliedJobs||[]).includes(j.id));
+  const list = document.getElementById('appliedJobsList');
+  if(appliedJobs.length===0){
+    list.innerHTML = `<div class="empty-state"><div class="big-ic">📨</div><h3>No applications yet</h3><p>Jobs you apply to will show up here.</p></div>`;
+  } else {
+    list.innerHTML = appliedJobs.map(j=>`
+      <div class="applied-row">
+        <div style="display:flex; gap:12px; align-items:center;">
+          <div class="job-logo">${initials(j.companyName)}</div>
+          <div><b>${j.jobTitle}</b><div style="font-size:12.5px; color:var(--sub);">${j.companyName} · ${j.location}</div></div>
+        </div>
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span class="at-status">Under Review</span>
+          <button class="btn btn-ghost btn-sm" onclick="viewDetails(${j.id})">View</button>
+        </div>
+      </div>`).join('');
+  }
+}
+function saveProfile(){
+  const user = getCurrentUser();
+  if(!user) return;
+  user.name = document.getElementById('pf_name').value.trim() || user.name;
+  user.email = document.getElementById('pf_email').value.trim() || user.email;
+  user.skills = document.getElementById('pf_skills').value.split(',').map(s=>s.trim()).filter(Boolean);
+  user.bio = document.getElementById('pf_bio').value.trim();
+  saveUser(user);
+  renderAuthArea(); renderProfile();
+  toast('Profile updated successfully','✅');
+}
+
+/* ---------- 14c. SETTINGS PAGE ---------- */
+function syncThemeToggle(){
+  const t = document.getElementById('settingThemeToggle');
+  if(t) t.classList.toggle('on', document.body.getAttribute('data-theme')==='dark');
+}
+function changePassword(){
+  const user = getCurrentUser();
+  if(!user) return;
+  const cur = document.getElementById('set_curpass').value;
+  const next = document.getElementById('set_newpass').value;
+  if(cur !== user.password){ toast('Current password is incorrect','⚠️'); return; }
+  if(next.length<6){ toast('New password must be at least 6 characters','⚠️'); return; }
+  user.password = next; saveUser(user);
+  document.getElementById('set_curpass').value=''; document.getElementById('set_newpass').value='';
+  toast('Password updated successfully','🔐');
+}
+function deleteAccount(){
+  const user = getCurrentUser();
+  if(!user) return;
+  if(!confirm('Delete your account permanently? This cannot be undone.')) return;
+  let users = getUsers().filter(u=>u.id!==user.id); saveUsers(users);
+  localStorage.removeItem('scc_saved_'+user.id);
+  localStorage.removeItem(LS_CURRENT);
+  toast('Account deleted','🗑️');
+  renderAuthArea(); updateSavedCount();
+  go('home');
+}
+
+/* ---------- 14d. SPLASH ---------- */
+function hideSplash(){
+  const s = document.getElementById('splash');
+  s.classList.add('hide');
+  setTimeout(()=>s.remove(), 600);
+}
+
+/* ---------- 15. INIT ---------- */
+loadJobs();
+seedDemoUser();
+populateSelectors();
+updateSavedCount();
+renderAuthArea();
+renderHome();
+adminGo('overview');
+document.getElementById('jobModal').addEventListener('click', e=>{ if(e.target.id==='jobModal') closeJobModal(); });
+setTimeout(hideSplash, 1400);
+</script>
+</body>
+</html>
